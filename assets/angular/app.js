@@ -1,0 +1,31 @@
+// angular.module('UserApp',['ui.router','ngResource','UserApp.controllers','UserApp.services']);
+angular.module('UserApp',['ui.router','ngResource','UserApp.controllers','UserApp.services']);
+
+angular.module('UserApp')
+.config(function($stateProvider){
+	$stateProvider  
+		.state({
+			name:'users-list',
+			url:'/',
+			controller:'UserListController',
+			templateUrl:'template_index',
+		})
+		.state({
+			name:'view-user',
+			url:'/view/:id',
+			controller:'UserViewController',
+			templateUrl:'template_view/'
+		})
+		.state({
+			name:'create-user',
+			url:'/create',
+			controller:'UserCreateController',
+			templateUrl:'template_create/'
+		})
+		.state({
+			name:'edit-user',
+			url:'/edit/:id',
+			controller:'UserEditController',
+			templateUrl:'template_edit/'
+		})
+	})
