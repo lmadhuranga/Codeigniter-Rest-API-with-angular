@@ -4,8 +4,7 @@
 angular.module('UserApp.controllers',[])
 // UserListController
 .controller('UserListController',function($scope,$state,popupService,$window,Users, User){
-    // get organization list by ajax
-    console.log('UserListController');
+    // get organization list by ajax 
     $scope.Users=Users.query();
 
     // if delete
