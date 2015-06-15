@@ -9,5 +9,6 @@
 <div ng-app="UserApp">	
 	<div ui-view></div>
 	
+	<a href="localhost/git/Rest-API-Codeigniter-with-Angular/index.php/front/user/#/">Back</a>
 </div>
 
