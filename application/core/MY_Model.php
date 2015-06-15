@@ -22,7 +22,7 @@ class MY_Model extends CI_Model
     //
     //@ type :
     //#return type :
-    public function get($fields = "*", $id = NULL, $single = FALSE, $perpage=0, $start=0, $array='array')
+    public function get($fields = NULL, $id = NULL, $single = FALSE, $asOrder="ASC", $perpage=0, $start=0, $array='array')
     {
         if ($fields !==NULL)
         {
@@ -47,11 +47,9 @@ class MY_Model extends CI_Model
 
     	if($this->_order_by!='')
     	{
-    		$this->db->order_by($this->_primary_key,$this->_order_by);
+    		$this->db->order_by($this->_order_by,$asOrder);
     	}
-        if ($perpage!=0){
-            $this->db->limit($perpage,$start);
-        }
+        if($start!=0) $this->db->limit($perpage,$start);
     	return $this->db->get($this->_table_name)->$method($array); 
     	
     }//Function End get()---------------------------------------------------FUNEND()
@@ -62,13 +60,10 @@ class MY_Model extends CI_Model
     //
     //@ type :
     //#return type :
-    public function get_by($where='', $fields = NULL, $id = NULL, $single = FALSE, $perpage=0, $start=0, $array='array')
+    public function get_by($where='', $fields = NULL, $id = NULL, $single = FALSE, $asOrder="ASC", $perpage=0, $start=0, $array='array')
     {
-        if ($fields!==NULL) {
-            $this->db->select($fields);
-        }
     	$this->db->where($where);
-    	return $this->get(NULL, $id, $single,$perpage);
+    	return $this->get($fields, $id, $single, $asOrder);
     }//Function End get_by()---------------------------------------------------FUNEND()
 
 
@@ -79,13 +74,11 @@ class MY_Model extends CI_Model
     //#return type :
     public function save($data, $id = NULL)
     {
-    	// set timestamp 
-        if ($this->_timestamps==TRUE)
-        { 
-        	$now = date('Y-m-d H:i:s');
-        	$id || $data['created'] = $now;
-        	$data['modified'] = $now; 
-        }
+    	// set timestamp
+    	$this->_timestamps = TRUE;
+    	$now = date('Y-m-d H:i:s');
+    	$id || $data['created'] = $now;
+    	$data['modified'] = $now; 
     	// insert
     	if($id == NULL)
     	{            
@@ -128,8 +121,6 @@ class MY_Model extends CI_Model
     		$this->db->where(array($this->_primary_key=>$id));
     		$this->db->limit(1);
     		$this->db->delete($this->_table_name);
-            
-            return TRUE;
     	}
     	
     }//Function End delete()---------------------------------------------------FUNEND()
@@ -148,42 +139,6 @@ class MY_Model extends CI_Model
         return $data;
     }//Function End array_from_post()---------------------------------------------------FUNEND()
 
-    
-
-    /**
-     * @author                          Madhuranga Senadheera
-     * Purpose of the function          Create a dropdown list using data table
-     * 
-     */
-    public function get_as_dropdown($form_field_name,$selected_val,$select_field_list,$message,$options)
-    {
-        // get data base data
-        $this->db->select($select_field_list);
-        // convert to array
-        $_result = $this->db->get($this->_table_name)->result_array();
-        if(!empty($_result))
-        {
-            // create a suitable array for drop down
-            $data_values[''] = 'Select a '.$message;
-            foreach ($_result as $key => $row)
-            {
-                $data_values[$row[$select_field_list[0]]] = $row[$select_field_list[1]];
-            } 
-
-        }
-        else
-        {
-            // if no result
-            $data_values[''] = 'Not Define '.$message;
-            // return  '<h4>'.'Define '.$message .'</h4>';
-        }
-        return  form_dropdown($form_field_name, $data_values, $selected_val,$options);
-
-
-    }
-    /*---------------- ---------End of get_dropdown()---------------------------*/
-
- 
     
 }// End MY_Model --------------Class{}
 //Owner : Madhuranga Senadheera
